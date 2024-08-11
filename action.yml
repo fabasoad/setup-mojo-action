@@ -1,0 +1,53 @@
+---
+name: Setup Mojo
+author: Yevhen Fabizhevskyi
+description: This action sets up a MAX and Mojo.
+branding:
+  icon: terminal
+  color: gray-dark
+inputs:
+  force:
+    description: |
+      If "true" it installs MAX and Mojo even if it is already installed on a
+      runner. Otherwise, skips installation.
+    default: "false"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Fail
+      if: ${{ runner.os == 'Windows' }}
+      run: |
+        echo "::error::${RUNNER_OS} ${RUNNER_ARCH} is not supported"
+        exit 1
+      shell: sh
+    - name: Validate inputs
+      id: validate-inputs
+      env:
+        INPUT_FORCE: "${{ inputs.force }}"
+      run: ./validate-inputs.sh "${INPUT_FORCE}"
+      shell: sh
+      working-directory: ${{ github.action_path }}/src
+    - name: Prepare metadata
+      id: metadata
+      env:
+        INPUT_FORCE: "${{ inputs.force }}"
+      run: ./prepare-metadata.sh "${INPUT_FORCE}"
+      shell: sh
+      working-directory: ${{ github.action_path }}/src
+    - name: Setup Python
+      if: ${{ steps.metadata.outputs.to-install == 'true' && steps.metadata.outputs.python-exec == '' }}
+      id: setup-python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: Install Mojo
+      if: ${{ steps.metadata.outputs.to-install == 'true' }}
+      run: ./install-mojo.sh "${{ steps.metadata.outputs.python-exec || steps.setup-python.outputs.python-path }}"
+      shell: sh
+      working-directory: ${{ github.action_path }}/src
+    - name: Print version
+      run: |
+        max --version
+        mojo --version
+      shell: sh
