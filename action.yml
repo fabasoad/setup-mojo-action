@@ -32,14 +32,7 @@ runs:
       id: metadata
       env:
         INPUT_FORCE: "${{ inputs.force }}"
-      run: |
-        to_install="false"
-        if [ "${INPUT_FORCE}" = "true" ] || ! command -v mojo >/dev/null 2>&1; then
-          to_install="true"
-        fi
-        echo "to-install=${to_install}" >> "$GITHUB_OUTPUT"
-
-        ./determine-python-exec.sh
+      run: ./prepare-metadata.sh "${INPUT_FORCE}"
       shell: sh
       working-directory: ${{ github.action_path }}/src
     - name: Setup Python
