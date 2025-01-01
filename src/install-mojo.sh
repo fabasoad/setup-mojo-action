@@ -1,15 +1,7 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 main() {
-  python_exec_path="${1}"
-
-  curl -s https://get.modular.com | sh -
-  ${python_exec_path} -m venv ~/max-venv && source ~/max-venv/bin/activate
-  modular install max
-  MAX_PATH=$(modular config max.path)
-  ${python_exec_path} -m pip install --find-links "${MAX_PATH}/wheels" max-engine
-  echo "MODULAR_HOME=${HOME}/.modular" >> "$GITHUB_ENV"
-  echo "${MAX_PATH}/bin" >> "$GITHUB_PATH"
+  curl -ssL https://magic.modular.com/8dc65f55-3ba2-410c-a46f-4f8f8102a7b7 | bash
 }
 
 main "$@"

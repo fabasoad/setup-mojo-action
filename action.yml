@@ -42,22 +42,16 @@ runs:
       shell: sh
       working-directory: "${{ github.action_path }}/src"
 
-    - name: Setup Python
-      if: ${{ steps.info.outputs.bin-installed == 'false' && steps.info.outputs.python-exec == '' }}
-      id: setup-python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
-
     - name: Install Mojo
       if: ${{ steps.info.outputs.bin-installed == 'false' }}
       id: install-mojo
-      run: ./install-mojo.sh "${{ steps.info.outputs.python-exec || steps.setup-python.outputs.python-path }}"
-      shell: sh
+      run: ./install-mojo.sh
+      shell: bash
       working-directory: "${{ github.action_path }}/src"
 
     - name: Print version
       run: |
-        max --version
+        magic --version
         mojo --version
+        max --version
       shell: sh
