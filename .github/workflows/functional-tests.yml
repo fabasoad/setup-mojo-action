@@ -58,12 +58,18 @@ jobs:
         if: ${{ matrix.os != 'windows' }}
         run: |
           unique_key="$(date +%s)"
-          script_filename="script-${unique_key}.mojo"
           project_name="project-${unique_key}"
+          script_filename="script-${unique_key}.mojo"
+
           magic init "${project_name}" --format mojoproject
-          echo 'fn main():' > "${project_name}/${script_filename}"
-          echo '    print("Hello, world!")' >> "${project_name}/${script_filename}"
-          [ "$(magic run mojo "${project_name}/${script_filename}")" = "Hello, world!" ] || exit 1;
+          cd "${project_name}"
+          magic run mojo --version
+
+          echo 'fn main():' > "${script_filename}"
+          echo '    print("Hello, world!")' >> "${script_filename}"
+          [ "$(magic run mojo "${script_filename}")" = "Hello, world!" ] || exit 1;
+        working-directory: ${{ runner.temp }}
+
   test-force:
     name: Test force
     runs-on: ubuntu-latest
