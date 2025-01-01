@@ -35,14 +35,21 @@ None.
 
 ## Example usage
 
-1. Create `hello.mojo` with the following content:
+1. Create a new project:
+
+   ```shell
+   magic init my-project --format mojoproject
+   cd my-project
+   ```
+
+2. Create `hello.mojo` inside `my-project` with the following content:
 
    ```text
    fn main():
        print("Hello, world!")
    ```
 
-2. Create and run the following workflow:
+3. Create and run the following workflow:
 
    ```yaml
    name: Setup Mojo
@@ -55,14 +62,9 @@ None.
        runs-on: ubuntu-latest
        steps:
          - uses: actions/checkout@v4
-         - uses: fabasoad/setup-mojo-action@v1
+         - uses: fabasoad/setup-mojo-action@v2
          - name: Run script
-           run: magic run mojo hello.mojo
-   ```
-
-3. See the result:
-
-   ```text
-   Run mojo hello.mojo
-   Hello, world!
+           run: |
+             cd my-project
+             magic run mojo hello.mojo
    ```
