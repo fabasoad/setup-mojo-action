@@ -12,6 +12,10 @@ inputs:
       runner. Otherwise, skips installation.
     default: "false"
     required: false
+outputs:
+  installed:
+    description: Whether mojo was installed or not.
+    value: "${{ steps.install-mojo.outcome == 'success' }}"
 runs:
   using: "composite"
   steps:
@@ -21,6 +25,7 @@ runs:
         echo "::error::${RUNNER_OS} ${RUNNER_ARCH} is not supported"
         exit 1
       shell: sh
+
     - name: Validate inputs
       id: validate-inputs
       env:
@@ -28,24 +33,29 @@ runs:
       run: ./validate-inputs.sh "${INPUT_FORCE}"
       shell: sh
       working-directory: ${{ github.action_path }}/src
-    - name: Prepare metadata
-      id: metadata
+
+    - name: Collect info
+      id: info
       env:
         INPUT_FORCE: "${{ inputs.force }}"
-      run: ./prepare-metadata.sh "${INPUT_FORCE}"
+      run: ./collect-info.sh "${INPUT_FORCE}"
       shell: sh
-      working-directory: ${{ github.action_path }}/src
+      working-directory: "${{ github.action_path }}/src"
+
     - name: Setup Python
-      if: ${{ steps.metadata.outputs.to-install == 'true' && steps.metadata.outputs.python-exec == '' }}
+      if: ${{ steps.info.outputs.bin-installed == 'false' && steps.info.outputs.python-exec == '' }}
       id: setup-python
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
+
     - name: Install Mojo
-      if: ${{ steps.metadata.outputs.to-install == 'true' }}
-      run: ./install-mojo.sh "${{ steps.metadata.outputs.python-exec || steps.setup-python.outputs.python-path }}"
+      if: ${{ steps.info.outputs.bin-installed == 'false' }}
+      id: install-mojo
+      run: ./install-mojo.sh "${{ steps.info.outputs.python-exec || steps.setup-python.outputs.python-path }}"
       shell: sh
-      working-directory: ${{ github.action_path }}/src
+      working-directory: "${{ github.action_path }}/src"
+
     - name: Print version
       run: |
         max --version
