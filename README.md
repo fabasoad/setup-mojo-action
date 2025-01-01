@@ -6,7 +6,8 @@
 ![security](https://github.com/fabasoad/setup-mojo-action/actions/workflows/security.yml/badge.svg)
 ![linting](https://github.com/fabasoad/setup-mojo-action/actions/workflows/linting.yml/badge.svg)
 
-This action sets up a MAX and [Mojo](https://www.modular.com/mojo).
+This action sets up a [magic](https://docs.modular.com/magic/) CLI. Using it you
+can create a [mojo](https://docs.modular.com/mojo/manual/) project.
 
 ## Supported OS
 
@@ -23,8 +24,8 @@ This action sets up a MAX and [Mojo](https://www.modular.com/mojo).
 ```yaml
 - uses: fabasoad/setup-mojo-action@v1
   with:
-    # (Optional) If "true" it installs MAX and Mojo even if it is already
-    # installed on a runner. Otherwise, skips installation. Defaults to "false".
+    # (Optional) If "true" it installs magic even if it is already installed on
+    # a runner. Otherwise, skips installation. Defaults to "false".
     force: "false"
 ```
 
@@ -56,7 +57,7 @@ None.
          - uses: actions/checkout@v4
          - uses: fabasoad/setup-mojo-action@v1
          - name: Run script
-           run: mojo hello.mojo
+           run: magic run mojo hello.mojo
    ```
 
 3. See the result:

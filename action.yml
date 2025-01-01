@@ -1,21 +1,21 @@
 ---
 name: Setup Mojo
 author: Yevhen Fabizhevskyi
-description: This action sets up a MAX and Mojo.
+description: This action sets up a magic CLI.
 branding:
   icon: terminal
   color: gray-dark
 inputs:
   force:
     description: |
-      If "true" it installs MAX and Mojo even if it is already installed on a
-      runner. Otherwise, skips installation.
+      If "true" it installs magic even if it is already installed on a runner.
+      Otherwise, skips installation.
     default: "false"
     required: false
 outputs:
   installed:
-    description: Whether mojo was installed or not.
-    value: "${{ steps.install-mojo.outcome == 'success' }}"
+    description: Whether magic was installed or not.
+    value: "${{ steps.install-magic.outcome == 'success' }}"
 runs:
   using: "composite"
   steps:
@@ -42,16 +42,15 @@ runs:
       shell: sh
       working-directory: "${{ github.action_path }}/src"
 
-    - name: Install Mojo
+    - name: Install magic
       if: ${{ steps.info.outputs.bin-installed == 'false' }}
-      id: install-mojo
-      run: ./install-mojo.sh
+      id: install-magic
+      run: ./install-magic.sh
       shell: bash
       working-directory: "${{ github.action_path }}/src"
 
     - name: Print version
       run: |
         magic --version
-        mojo --version
-        max --version
+        magic run mojo --version
       shell: sh

@@ -59,7 +59,7 @@ jobs:
         run: |
           echo 'fn main():' > hello-world.mojo
           echo '    print("Hello, world!")' >> hello-world.mojo
-          [ "$(mojo hello-world.mojo)" = "Hello, world!" ] || exit 1;
+          [ "$(magic run mojo hello-world.mojo)" = "Hello, world!" ] || exit 1;
   test-force:
     name: Test force
     runs-on: ubuntu-latest

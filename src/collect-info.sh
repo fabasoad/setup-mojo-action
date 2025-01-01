@@ -10,16 +10,16 @@ main() {
   input_force="${1}"
 
   bin_installed="false"
-  if command -v mojo >/dev/null 2>&1; then
+  if command -v magic >/dev/null 2>&1; then
     if [ "${input_force}" = "false" ]; then
       msg="Installation skipped."
       bin_installed="true"
     else
       msg="Executing forced installation."
     fi
-    log_info "mojo is found at $(which mojo). ${msg}"
+    log_info "magic is found at $(which magic). ${msg}"
   else
-    log_info "mojo is not found. Executing installation."
+    log_info "magic is not found. Executing installation."
   fi
   echo "bin-installed=${bin_installed}" >> $GITHUB_OUTPUT
 }
