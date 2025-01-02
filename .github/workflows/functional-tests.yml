@@ -54,7 +54,7 @@ jobs:
           test_equal "mojo should be installed" \
             "${{ steps.setup-mojo.outputs.installed }}" \
             "true"
-      - name: Validate script
+      - name: Validate script with magic
         if: ${{ matrix.os != 'windows' }}
         run: |
           unique_key="$(date +%s)"
@@ -68,6 +68,21 @@ jobs:
           echo 'fn main():' > "${script_filename}"
           echo '    print("Hello, world!")' >> "${script_filename}"
           [ "$(magic run mojo "${script_filename}")" = "Hello, world!" ] || exit 1;
+        working-directory: ${{ runner.temp }}
+      - name: Validate script with mojo
+        if: ${{ matrix.os != 'windows' }}
+        run: |
+          unique_key="$(date +%s)"
+          project_name="project-${unique_key}"
+          script_filename="script-${unique_key}.mojo"
+
+          magic init "${project_name}" --format mojoproject
+          cd "${project_name}"
+          mojo --version
+
+          echo 'fn main():' > "${script_filename}"
+          echo '    print("Hello, world!")' >> "${script_filename}"
+          [ "$(mojo "${script_filename}")" = "Hello, world!" ] || exit 1;
         working-directory: ${{ runner.temp }}
 
   test-force:
