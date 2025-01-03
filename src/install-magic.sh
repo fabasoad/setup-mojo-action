@@ -7,7 +7,7 @@ main() {
   echo "$HOME/.modular/bin" >> "$GITHUB_PATH"
   # so people can use mojo instead of magic run mojo
   cat > "$HOME/.modular/bin/mojo" << EOF
-#!/bin/sh
+#!/usr/bin/env bash
 
 magic run mojo $*
 EOF
