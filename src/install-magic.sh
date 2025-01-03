@@ -12,6 +12,8 @@ main() {
 magic run mojo $*
 EOF
   chmod a+rx "$HOME/.modular/bin/mojo"
+  echo "Installed mojo compatibility script"
+  ls -l "$HOME/.modular/bin/mojo"
 }
 
 main "$@"
