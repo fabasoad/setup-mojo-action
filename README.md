@@ -31,7 +31,11 @@ can create a [mojo](https://docs.modular.com/mojo/manual/) project.
 
 ## Outputs
 
-None.
+<!-- prettier-ignore-start -->
+| Name      | Description                        | Example |
+|-----------|------------------------------------|---------|
+| installed | Whether magic was installed or not | `true`  |
+<!-- prettier-ignore-end -->
 
 ## Example usage
 
