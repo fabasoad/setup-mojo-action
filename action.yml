@@ -1,17 +1,21 @@
 ---
 name: Setup Mojo
 author: Yevhen Fabizhevskyi
-description: This action sets up a MAX and Mojo.
+description: This action sets up a magic CLI.
 branding:
   icon: terminal
   color: gray-dark
 inputs:
   force:
     description: |
-      If "true" it installs MAX and Mojo even if it is already installed on a
-      runner. Otherwise, skips installation.
+      If "true" it installs magic even if it is already installed on a runner.
+      Otherwise, skips installation.
     default: "false"
     required: false
+outputs:
+  installed:
+    description: Whether magic was installed or not.
+    value: "${{ steps.install-magic.outcome == 'success' }}"
 runs:
   using: "composite"
   steps:
@@ -21,6 +25,7 @@ runs:
         echo "::error::${RUNNER_OS} ${RUNNER_ARCH} is not supported"
         exit 1
       shell: sh
+
     - name: Validate inputs
       id: validate-inputs
       env:
@@ -28,26 +33,22 @@ runs:
       run: ./validate-inputs.sh "${INPUT_FORCE}"
       shell: sh
       working-directory: ${{ github.action_path }}/src
-    - name: Prepare metadata
-      id: metadata
+
+    - name: Collect info
+      id: info
       env:
         INPUT_FORCE: "${{ inputs.force }}"
-      run: ./prepare-metadata.sh "${INPUT_FORCE}"
+      run: ./collect-info.sh "${INPUT_FORCE}"
       shell: sh
-      working-directory: ${{ github.action_path }}/src
-    - name: Setup Python
-      if: ${{ steps.metadata.outputs.to-install == 'true' && steps.metadata.outputs.python-exec == '' }}
-      id: setup-python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
-    - name: Install Mojo
-      if: ${{ steps.metadata.outputs.to-install == 'true' }}
-      run: ./install-mojo.sh "${{ steps.metadata.outputs.python-exec || steps.setup-python.outputs.python-path }}"
-      shell: sh
-      working-directory: ${{ github.action_path }}/src
+      working-directory: "${{ github.action_path }}/src"
+
+    - name: Install magic
+      if: ${{ steps.info.outputs.bin-installed == 'false' }}
+      id: install-magic
+      run: ./install-magic.sh
+      shell: bash
+      working-directory: "${{ github.action_path }}/src"
+
     - name: Print version
-      run: |
-        max --version
-        mojo --version
+      run: magic --version
       shell: sh

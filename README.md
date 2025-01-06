@@ -2,12 +2,12 @@
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
 ![GitHub release](https://img.shields.io/github/v/release/fabasoad/setup-mojo-action?include_prereleases)
-![functional-tests-local](https://github.com/fabasoad/setup-mojo-action/actions/workflows/functional-tests-local.yml/badge.svg)
-![functional-tests-remote](https://github.com/fabasoad/setup-mojo-action/actions/workflows/functional-tests-remote.yml/badge.svg)
+![functional-tests](https://github.com/fabasoad/setup-mojo-action/actions/workflows/functional-tests.yml/badge.svg)
 ![security](https://github.com/fabasoad/setup-mojo-action/actions/workflows/security.yml/badge.svg)
 ![linting](https://github.com/fabasoad/setup-mojo-action/actions/workflows/linting.yml/badge.svg)
 
-This action sets up a MAX and [Mojo](https://www.modular.com/mojo).
+This action sets up a [magic](https://docs.modular.com/magic/) CLI. Using it you
+can create a [mojo](https://docs.modular.com/mojo/manual/) project.
 
 ## Supported OS
 
@@ -24,8 +24,8 @@ This action sets up a MAX and [Mojo](https://www.modular.com/mojo).
 ```yaml
 - uses: fabasoad/setup-mojo-action@v1
   with:
-    # (Optional) If "true" it installs MAX and Mojo even if it is already
-    # installed on a runner. Otherwise, skips installation. Defaults to false.
+    # (Optional) If "true" it installs magic even if it is already installed on
+    # a runner. Otherwise, skips installation. Defaults to "false".
     force: "false"
 ```
 
@@ -35,14 +35,21 @@ None.
 
 ## Example usage
 
-1. Create `hello.mojo` with the following content:
+1. Create a new project:
+
+   ```shell
+   magic init my-project --format mojoproject
+   cd my-project
+   ```
+
+2. Create `hello.mojo` inside `my-project` with the following content:
 
    ```text
    fn main():
        print("Hello, world!")
    ```
 
-2. Create and run the following workflow:
+3. Create and run the following workflow:
 
    ```yaml
    name: Setup Mojo
@@ -55,14 +62,9 @@ None.
        runs-on: ubuntu-latest
        steps:
          - uses: actions/checkout@v4
-         - uses: fabasoad/setup-mojo-action@v1
+         - uses: fabasoad/setup-mojo-action@v2
          - name: Run script
-           run: mojo hello.mojo
-   ```
-
-3. See the result:
-
-   ```text
-   Run mojo hello.mojo
-   Hello, world!
+           run: |
+             cd my-project
+             magic run mojo hello.mojo
    ```

@@ -1,0 +1,105 @@
+---
+name: Functional Tests
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - .github/workflows/functional-tests.yml
+      - src/**
+      - action.yml
+  schedule:
+    # Every Friday at 09:00 JST
+    - cron: "0 0 * * 5"
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: sh
+
+jobs:
+  run-script:
+    name: Run script
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu", "macos", "windows"]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
+      - name: Setup Mojo
+        id: setup-mojo
+        uses: ./
+        continue-on-error: true
+      - name: Validate failure
+        if: ${{ matrix.os == 'windows' }}
+        run: |
+          if [ "${{ steps.setup-mojo.outcome }}" != "failure" ]; then
+            echo "::error title=Test failed::Setting up Mojo was expected to fail"
+            exit 1
+          fi
+      - name: Test action completion
+        if: ${{ matrix.os != 'windows' }}
+        run: |
+          test_equal() {
+            if [ "${2}" != "${3}" ]; then
+              echo "::error title=${1}::Expected: ${3}. Actual: ${2}."
+              exit 1
+            fi
+          }
+          test_equal "mojo should be installed" \
+            "${{ steps.setup-mojo.outputs.installed }}" \
+            "true"
+      - name: Validate script
+        if: ${{ matrix.os != 'windows' }}
+        run: |
+          unique_key="$(date +%s)"
+          project_name="project-${unique_key}"
+          script_filename="script-${unique_key}.mojo"
+
+          magic init "${project_name}" --format mojoproject
+          cd "${project_name}"
+          magic run mojo --version
+
+          echo 'fn main():' > "${script_filename}"
+          echo '    print("Hello, world!")' >> "${script_filename}"
+          [ "$(magic run mojo "${script_filename}")" = "Hello, world!" ] || exit 1;
+        working-directory: ${{ runner.temp }}
+
+  test-force:
+    name: Test force
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        force: ["true", "false"]
+    steps:
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
+      - name: Setup mojo 1
+        id: setup-mojo-1
+        uses: ./
+      - name: Setup mojo 2
+        id: setup-mojo-2
+        uses: ./
+        with:
+          force: ${{ matrix.force }}
+      - name: Test action completion
+        run: |
+          test_equal() {
+            if [ "${2}" != "${3}" ]; then
+              echo "::error title=${1}::Expected: ${3}. Actual: ${2}."
+              exit 1
+            fi
+          }
+          test_equal "Wrong \"installed\" output from setup-mojo-1" \
+            "${{ steps.setup-mojo-1.outputs.installed }}" \
+            "true"
+          test_equal "Wrong \"installed\" output from setup-mojo-2" \
+            "${{ steps.setup-mojo-2.outputs.installed }}" \
+            "${{ matrix.force }}"
