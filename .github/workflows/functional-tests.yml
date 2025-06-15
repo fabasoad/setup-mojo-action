@@ -22,7 +22,7 @@ defaults:
 jobs:
   run-script:
     name: Run script
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
