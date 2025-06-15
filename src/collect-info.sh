@@ -10,16 +10,16 @@ main() {
   input_force="${1}"
 
   bin_installed="false"
-  if command -v magic >/dev/null 2>&1; then
+  if command -v pixi >/dev/null 2>&1; then
     if [ "${input_force}" = "false" ]; then
       msg="Installation skipped."
       bin_installed="true"
     else
       msg="Executing forced installation."
     fi
-    log_info "magic is found at $(which magic). ${msg}"
+    log_info "pixi is found at $(which pixi). ${msg}"
   else
-    log_info "magic is not found. Executing installation."
+    log_info "pixi is not found. Executing installation."
   fi
   echo "bin-installed=${bin_installed}" >> $GITHUB_OUTPUT
 }

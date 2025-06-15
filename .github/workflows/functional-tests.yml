@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu", "macos", "windows"]
+        os: ["ubuntu", "macos"]
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout ${{ github.repository }}
@@ -34,14 +34,6 @@ jobs:
       - name: Setup Mojo
         id: setup-mojo
         uses: ./
-        continue-on-error: true
-      - name: Validate failure
-        if: ${{ matrix.os == 'Windows' }}
-        run: |
-          if [ "${{ steps.setup-mojo.outcome }}" != "failure" ]; then
-            echo "::error title=Test failed::Setting up Mojo was expected to fail"
-            exit 1
-          fi
       - name: Test action completion
         if: ${{ matrix.os != 'Windows' }}
         run: |
@@ -61,13 +53,18 @@ jobs:
           project_name="project-${unique_key}"
           script_filename="script-${unique_key}.mojo"
 
-          magic init "${project_name}" --format mojoproject
+          pixi init "${project_name}" \
+            -c https://conda.modular.com/max-nightly/ \
+            -c conda-forge
           cd "${project_name}"
-          magic run mojo --version
 
-          echo 'fn main():' > "${script_filename}"
+          pixi add modular
+          pixi run mojo --version
+
+          echo 'def main():' > "${script_filename}"
           echo '    print("Hello, world!")' >> "${script_filename}"
-          [ "$(magic run mojo "${script_filename}")" = "Hello, world!" ] || exit 1;
+          pixi shell
+          [ "$(mojo "${script_filename}")" = "Hello, world!" ] || exit 1;
         working-directory: ${{ runner.temp }}
 
   test-force:

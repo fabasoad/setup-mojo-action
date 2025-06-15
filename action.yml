@@ -42,13 +42,13 @@ runs:
       shell: sh
       working-directory: "${{ github.action_path }}/src"
 
-    - name: Install magic
+    - name: Install pixi
       if: ${{ steps.info.outputs.bin-installed == 'false' }}
-      id: install-magic
-      run: ./install-magic.sh
+      id: install-pixi
+      run: ./install-pixi.sh
       shell: bash
       working-directory: "${{ github.action_path }}/src"
 
     - name: Print version
-      run: magic --version
+      run: pixi --version
       shell: sh

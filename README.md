@@ -66,9 +66,9 @@ can create a [mojo](https://docs.modular.com/mojo/manual/) project.
        runs-on: ubuntu-latest
        steps:
          - uses: actions/checkout@v4
-         - uses: fabasoad/setup-mojo-action@v2
-         - name: Run script
+         - uses: fabasoad/setup-mojo-action@v3
+         - name: Get Mojo version
            run: |
-             cd my-project
-             magic run mojo hello.mojo
+             pixi add modular
+             pixi run mojo --version
    ```
