@@ -1,21 +1,21 @@
 ---
 name: Setup Mojo
 author: Yevhen Fabizhevskyi
-description: This action sets up a magic CLI.
+description: This action sets up a pixi CLI.
 branding:
   icon: terminal
   color: gray-dark
 inputs:
   force:
     description: |
-      If "true" it installs magic even if it is already installed on a runner.
+      If "true" it installs pixi even if it is already installed on a runner.
       Otherwise, skips installation.
     default: "false"
     required: false
 outputs:
   installed:
-    description: Whether magic was installed or not.
-    value: "${{ steps.install-magic.outcome == 'success' }}"
+    description: Whether pixi was installed or not.
+    value: "${{ steps.install-pixi.outcome == 'success' }}"
 runs:
   using: "composite"
   steps:

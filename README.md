@@ -6,8 +6,8 @@
 ![security](https://github.com/fabasoad/setup-mojo-action/actions/workflows/security.yml/badge.svg)
 ![linting](https://github.com/fabasoad/setup-mojo-action/actions/workflows/linting.yml/badge.svg)
 
-This action sets up a [magic](https://docs.modular.com/magic/) CLI. Using it you
-can create a [mojo](https://docs.modular.com/mojo/manual/) project.
+This action sets up a [pixi](https://pixi.sh/latest/) CLI. Using it you can
+create a [mojo](https://docs.modular.com/mojo/manual/) project.
 
 ## Supported OS
 
@@ -24,7 +24,7 @@ can create a [mojo](https://docs.modular.com/mojo/manual/) project.
 ```yaml
 - uses: fabasoad/setup-mojo-action@v1
   with:
-    # (Optional) If "true" it installs magic even if it is already installed on
+    # (Optional) If "true" it installs pixi even if it is already installed on
     # a runner. Otherwise, skips installation. Defaults to "false".
     force: "false"
 ```
@@ -32,43 +32,27 @@ can create a [mojo](https://docs.modular.com/mojo/manual/) project.
 ## Outputs
 
 <!-- prettier-ignore-start -->
-| Name      | Description                        | Example |
-|-----------|------------------------------------|---------|
-| installed | Whether magic was installed or not | `true`  |
+| Name      | Description                       | Example |
+|-----------|-----------------------------------|---------|
+| installed | Whether pixi was installed or not | `true`  |
 <!-- prettier-ignore-end -->
 
 ## Example usage
 
-1. Create a new project:
+```yaml
+name: Setup Mojo
 
-   ```shell
-   magic init my-project --format mojoproject
-   cd my-project
-   ```
+on: push
 
-2. Create `hello.mojo` inside `my-project` with the following content:
-
-   ```text
-   fn main():
-       print("Hello, world!")
-   ```
-
-3. Create and run the following workflow:
-
-   ```yaml
-   name: Setup Mojo
-
-   on: push
-
-   jobs:
-     setup:
-       name: Setup
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v4
-         - uses: fabasoad/setup-mojo-action@v3
-         - name: Get Mojo version
-           run: |
-             pixi add modular
-             pixi run mojo --version
-   ```
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: fabasoad/setup-mojo-action@v3
+      - name: Get Mojo version
+        run: |
+          pixi add modular
+          pixi run mojo --version
+```
