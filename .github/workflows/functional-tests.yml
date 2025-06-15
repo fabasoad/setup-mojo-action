@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu", "macos"]
+        os: ["ubuntu", "macos", "windows"]
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout ${{ github.repository }}
@@ -35,7 +35,6 @@ jobs:
         id: setup-mojo
         uses: ./
       - name: Test action completion
-        if: ${{ matrix.os != 'Windows' }}
         run: |
           test_equal() {
             if [ "${2}" != "${3}" ]; then
@@ -47,7 +46,6 @@ jobs:
             "${{ steps.setup-mojo.outputs.installed }}" \
             "true"
       - name: Validate script
-        if: ${{ matrix.os != 'Windows' }}
         run: |
           unique_key="$(date +%s)"
           project_name="project-${unique_key}"

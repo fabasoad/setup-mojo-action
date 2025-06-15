@@ -14,7 +14,7 @@ create a [mojo](https://docs.modular.com/mojo/manual/) project.
 <!-- prettier-ignore-start -->
 | OS      |                    |
 |---------|--------------------|
-| Windows | :x:                |
+| Windows | :white_check_mark: |
 | Linux   | :white_check_mark: |
 | macOS   | :white_check_mark: |
 <!-- prettier-ignore-end -->
@@ -22,7 +22,7 @@ create a [mojo](https://docs.modular.com/mojo/manual/) project.
 ## Inputs
 
 ```yaml
-- uses: fabasoad/setup-mojo-action@v1
+- uses: fabasoad/setup-mojo-action@v3
   with:
     # (Optional) If "true" it installs pixi even if it is already installed on
     # a runner. Otherwise, skips installation. Defaults to "false".
@@ -56,3 +56,7 @@ jobs:
           pixi add modular
           pixi run mojo --version
 ```
+
+## Contributions
+
+![Alt](https://repobeats.axiom.co/api/embed/10c029a2cd22271065ebb275813c9710dd0520cd.svg "Repobeats analytics image")
