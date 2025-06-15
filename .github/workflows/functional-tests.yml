@@ -22,7 +22,7 @@ defaults:
 jobs:
   run-script:
     name: Run script
-    timeout-minutes: 15
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -61,8 +61,7 @@ jobs:
 
           echo 'def main():' > "${script_filename}"
           echo '    print("Hello, world!")' >> "${script_filename}"
-          pixi shell
-          [ "$(mojo "${script_filename}")" = "Hello, world!" ] || exit 1;
+          [ "$(pixi run mojo "${script_filename}")" = "Hello, world!" ] || exit 1;
         working-directory: ${{ runner.temp }}
 
   test-force:
