@@ -22,7 +22,7 @@ create a [mojo](https://docs.modular.com/mojo/manual/) project.
 ## Inputs
 
 ```yaml
-- uses: fabasoad/setup-mojo-action@v1
+- uses: fabasoad/setup-mojo-action@v3
   with:
     # (Optional) If "true" it installs pixi even if it is already installed on
     # a runner. Otherwise, skips installation. Defaults to "false".
