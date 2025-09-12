@@ -49,10 +49,14 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: fabasoad/setup-mojo-action@v3
       - name: Get Mojo version
         run: |
           pixi add modular
           pixi run mojo --version
 ```
+
+## Contributions
+
+![Alt](https://repobeats.axiom.co/api/embed/1b076f0e5f463e9d58f0a2c64c2afe3bcd820c12.svg "Repobeats analytics image")
