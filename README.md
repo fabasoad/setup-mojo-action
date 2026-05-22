@@ -49,7 +49,7 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: fabasoad/setup-mojo-action@v3
       - name: Get Mojo version
         run: |

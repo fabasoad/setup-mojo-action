@@ -30,7 +30,7 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout ${{ github.repository }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Setup Mojo
         id: setup-mojo
         uses: ./
@@ -56,7 +56,7 @@ jobs:
             -c conda-forge
           cd "${project_name}"
 
-          pixi add modular
+          pixi add modular "gguf!=0.17.1"
           pixi run mojo --version
 
           echo 'def main():' > "${script_filename}"
@@ -74,7 +74,7 @@ jobs:
         force: ["true", "false"]
     steps:
       - name: Checkout ${{ github.repository }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Setup mojo 1
         id: setup-mojo-1
         uses: ./
