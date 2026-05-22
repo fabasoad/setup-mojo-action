@@ -57,7 +57,7 @@ jobs:
           cd "${project_name}"
 
           pixi workspace channel add https://conda.anaconda.org/modular/
-          pixi add modular::mojo
+          pixi add "modular::mojo>=0.25.6"
           pixi run mojo --version
 
           echo 'def main():' > "${script_filename}"
