@@ -56,7 +56,7 @@ jobs:
             -c conda-forge
           cd "${project_name}"
 
-          pixi add modular "gguf<0.17.0"
+          pixi add modular "gguf<0.16.3"
           pixi run mojo --version
 
           echo 'def main():' > "${script_filename}"
