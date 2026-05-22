@@ -56,8 +56,7 @@ jobs:
             -c conda-forge
           cd "${project_name}"
 
-          #pixi workspace channel add https://conda.anaconda.org/modular/
-          pixi add "mojo>=0.25.6.0"
+          pixi add mojo
           pixi run mojo --version
 
           echo 'def main():' > "${script_filename}"
