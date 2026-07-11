@@ -23,6 +23,8 @@ jobs:
   run-script:
     name: Run script
     timeout-minutes: 10
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -30,11 +32,15 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout ${{ github.repository }}
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: "false"
       - name: Setup Mojo
         id: setup-mojo
         uses: ./
       - name: Test action completion
+        env:
+          STEP_SETUP_MOJO_OUTPUT_INSTALLED: "${{ steps.setup-mojo.outputs.installed }}"
         run: |
           test_equal() {
             if [ "${2}" != "${3}" ]; then
@@ -43,7 +49,7 @@ jobs:
             fi
           }
           test_equal "mojo should be installed" \
-            "${{ steps.setup-mojo.outputs.installed }}" \
+            "${STEP_SETUP_MOJO_OUTPUT_INSTALLED}" \
             "true"
       - name: Validate script
         run: |
@@ -68,13 +74,17 @@ jobs:
     name: Test force
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
         force: ["true", "false"]
     steps:
       - name: Checkout ${{ github.repository }}
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: "false"
       - name: Setup mojo 1
         id: setup-mojo-1
         uses: ./
@@ -84,6 +94,9 @@ jobs:
         with:
           force: ${{ matrix.force }}
       - name: Test action completion
+        env:
+          STEP_SETUP_MOJO_1_OUTPUT_INSTALLED: "${{ steps.setup-mojo-1.outputs.installed }}"
+          STEP_SETUP_MOJO_2_OUTPUT_INSTALLED: "${{ steps.setup-mojo-2.outputs.installed }}"
         run: |
           test_equal() {
             if [ "${2}" != "${3}" ]; then
@@ -92,8 +105,8 @@ jobs:
             fi
           }
           test_equal "Wrong \"installed\" output from setup-mojo-1" \
-            "${{ steps.setup-mojo-1.outputs.installed }}" \
+            "${STEP_SETUP_MOJO_1_OUTPUT_INSTALLED}" \
             "true"
           test_equal "Wrong \"installed\" output from setup-mojo-2" \
-            "${{ steps.setup-mojo-2.outputs.installed }}" \
+            "${STEP_SETUP_MOJO_2_OUTPUT_INSTALLED}" \
             "${{ matrix.force }}"
